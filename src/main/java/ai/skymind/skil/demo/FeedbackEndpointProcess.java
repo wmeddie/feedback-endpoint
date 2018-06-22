@@ -8,10 +8,14 @@ import org.datavec.api.writable.Writable;
 import org.nd4j.shade.jackson.annotation.JsonProperty;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.UUID;
 
 public class FeedbackEndpointProcess extends BaseColumnTransform {
+    private static String workspaceName = System.getProperty("workspace", "resume_feedback");
 
     public FeedbackEndpointProcess() {}
 
@@ -38,8 +42,8 @@ public class FeedbackEndpointProcess extends BaseColumnTransform {
         }
 
         try {
-            Path resumeDir = Paths.get("/opt", "skil", "plugins", "files", "resume_feedback");
-            Path labelDir = Paths.get("/opt", "skil", "plugins", "files", "resume_feedback", label);
+            Path resumeDir = Paths.get("/opt", "skil", "plugins", "files", workspaceName);
+            Path labelDir = Paths.get("/opt", "skil", "plugins", "files", workspaceName, label);
 
             if (!Files.exists(resumeDir)) {
                 Files.createDirectories(resumeDir);
@@ -49,7 +53,7 @@ public class FeedbackEndpointProcess extends BaseColumnTransform {
                 Files.createDirectories(labelDir);
             }
 
-            Path outFile = Paths.get("/opt", "skil", "plugins", "files", "resume_feedback", label, UUID.randomUUID().toString() + ".txt");
+            Path outFile = Paths.get("/opt", "skil", "plugins", "files", workspaceName, label, UUID.randomUUID().toString() + ".txt");
 
             Files.write(outFile, output.getBytes(), StandardOpenOption.CREATE_NEW);
         } catch (IOException e) {
